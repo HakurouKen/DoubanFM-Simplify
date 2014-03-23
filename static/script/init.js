@@ -19,7 +19,7 @@
 				player.getNextSongList("n",function(info){
 					player.initSong(info.song[0]);
 					if(info.song[0].like){
-						$("#player a.btn.heart").addClass('hearted');
+						$("#fm-player-container a.btn.heart").addClass('hearted');
 					}
 				});
 			}

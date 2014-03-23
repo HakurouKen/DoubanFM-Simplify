@@ -60,9 +60,12 @@ var btnBind = function(player){
 	});
 
 	$player.find(".cover").bind('click',function(event){
-		window.open($(this).data('album'));
-	});
-	$player.find(".infos .title a").bind('click',function(event){
-		window.open($(this).data('album'));
+		/*
+		use
+			$(this).data("album")
+		will caused a bug that:
+		though the attribute data-album refreshed,the page still open the first page  
+		*/
+		window.open($(this).attr("data-album"));
 	});
 }

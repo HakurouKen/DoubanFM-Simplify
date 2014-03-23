@@ -1,0 +1,8 @@
+# folder
+/node_modules/
+/.sass-cache/
+
+# files
+Gruntfile.js
+package.json
+player.html

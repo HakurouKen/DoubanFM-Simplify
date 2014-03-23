@@ -1,0 +1,38 @@
+{
+	"manifest_version": 2,
+
+	"name":"douban.fm - HTML5",
+	"description": "Replace the flash player to HTML5",
+	"version": "0.1",
+	"content_scripts" : [
+	  {
+	    "matches" : [
+	      "*://douban.fm/"
+	      ],
+	    "js" : [
+	      "dist/script/jquery-1_10_1.min.js",
+	      "dist/script/player.min.js",
+	      "dist/script/bind.min.js",
+	      "dist/script/init.min.js"
+	      ],
+	      "run_at":"document_end"
+	  },{
+	    "matches" : [
+	      "*://douban.fm/"
+	      ],
+	  	"css" : [
+	    	"dist/style/reset.min.css",
+	    	"dist/style/player.min.css"
+	    ],
+	    "run_at":"document_idle"
+	  }
+	],
+	"web_accessible_resources": [
+		"dist/*",
+		"player-template.js"
+	],
+	"permissions":[
+		"*://douban.fm/",
+		"*://*.douban.com/*"
+	]
+}

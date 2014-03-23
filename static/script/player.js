@@ -13,7 +13,7 @@ var Player = (function(window,document,$,undefined){
 			_playingProgress, // the player playing progress
 			_volume, // the player volume
 			_loop, // whether loop a song or not 
-			_songIndex = 0;
+			_songIndex = -1;
 			_aud.autoplay = true;
 		
 		function changeSong(info){
@@ -47,6 +47,8 @@ var Player = (function(window,document,$,undefined){
 				_aud.src = info.url;
 				changeSong(info);
 				cb && cb(info);
+				console.log(_list);
+				console.log(_songIndex);
 				return this;
 			},
 			getState: function(){

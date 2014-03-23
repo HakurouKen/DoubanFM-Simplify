@@ -13,7 +13,7 @@
 		$("body").append(tmpl);
 		window.player = Player("#fm-player-container");
 		btnBind(player);
-		$("body").fadeIn(3000);
+		$("body").fadeIn(2000);
 		$.get("http://douban.fm/j/change_channel?fcid=undefined&tcid=0&area=songchannel").done(
 			function(){
 				player.getNextSongList("n",function(info){
@@ -29,10 +29,10 @@
 	function pageToogle(origin){
 		if(origin){
 			player.pause();
-			$wrapper.fadeIn(3000);
+			$wrapper.fadeIn(2000);
 			$originPlayer.html(originPlayerHTML);
 		}else{
-			$wrapper.fadeOut(3000);
+			$wrapper.fadeOut(2000);
 			$originPlayer.html("");
 		}
 	}

@@ -11,24 +11,25 @@ var btnBind = function(player){
 		}
 	});
 
-	function setHearted(info){
-		if(info.like == 1){
-			$heart.addClass("hearted");
+	player.bind("play",function(){
+		var info = player.getSongInfo();
+		if( info.like == 1 ){
+			$heart.addClass('hearted');
 		}else{
-			$heart.removeClass("hearted");
+			$heart.removeClass('hearted');
 		}
-	}
+	});
 
 	$player.find("a.btn.trash").bind("click",function(){
-		player.trash(setHearted);
+		player.trash();
 	});
 
 	$player.find("a.btn.next").bind("click",function(){
-		player.next(setHearted);
+		player.next();
 	});
 
 	$player.find("a.btn.prev").bind("click",function(){
-		player.prev(setHearted);
+		player.prev();
 	});
 
 	$player.find(".btn.pause").bind("click",function(event){

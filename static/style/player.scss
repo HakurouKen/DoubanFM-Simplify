@@ -93,11 +93,16 @@
 				
 				div.infos{
 					height: 88px;
+					$titleWidth: 220px;
 
 					h4.artist{
 						font-size: 23px;
 						color: #555;
 						text-shadow: 0 0 1px #A8A8A8;
+						width: $titleWidth;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
 					}
 		
 					div.album{
@@ -113,6 +118,7 @@
 					p.title-roller{
 						padding-top: 20px;
 						font-size: 12px;
+						width: $titleWidth;
 						white-space: nowrap;
 						overflow: hidden;
 						text-overflow: ellipsis;

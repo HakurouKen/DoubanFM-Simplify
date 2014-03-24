@@ -4,16 +4,18 @@ var Player = (function(window,document,$,undefined){
 							typeof playerDom === "string" ? $(playerDom) : playerDom
 						 		: $("body"),
 			_$loader = _$playerDom.find(".player"),
-			_list = [],
-			_info = {},
+			_list = [], // the song already played
+			_index = -1, // the current song index in the _list
+			_songList = [], // the songlist return from douban
+			_songIndex = 0, // the current song index in the _songList
+			_info = {}, // the current song info
 			_aud = new Audio(), // the audio dom
 			_state, // the player playing status
 			_length, // the song's length (second)
 			_loadingProgress, // the player loading progress
 			_playingProgress, // the player playing progress
 			_volume, // the player volume
-			_loop, // whether loop a song or not 
-			_songIndex = -1;
+			_loop; // whether loop a song or not 
 			_aud.autoplay = true;
 		
 		function changeSong(info){
@@ -29,6 +31,7 @@ var Player = (function(window,document,$,undefined){
 			}
 
 			if(info){
+				album = /\/subject\//.test(info.album) ? "http://music.douban.com" + info.album : info.album;
 				changeItem("div.cover>img","src",info.picture.replace(/\/mpic\//,"\/lpic\/"));
 				changeItem(".cover","data-album","http://music.douban.com"+info.album);
 				changeItem(".infos .artist","text",info.artist);
@@ -36,19 +39,30 @@ var Player = (function(window,document,$,undefined){
 				changeItem(".infos .year","text",info.public_time);
 				changeItem(".infos .title-roller a","text",info.title);
 				changeItem(".infos .title-roller a","href","http://music.douban.com"+info.album);
+				$("title").text(info.title + " - 豆瓣FM");
 			}
 		}
 
 		var that = {
-			initSong: function(info,cb){
-				_info = info;
-				_list.push(info);
-				_songIndex++;
-				_aud.src = info.url;
-				changeSong(info);
-				cb && cb(info);
-				console.log(_list);
-				console.log(_songIndex);
+			isAd: function(info){
+				return !/^\/subject\//.test(info.album);
+			},
+			initSong: function(info){
+				var self = this;
+				if( !this.isAd(info) ){
+					_info = info;
+					_list.push(info);
+					_index++;
+					_aud.src = info.url;
+					changeSong(info);
+					chrome.extension.sendMessage({
+						"action": "notification",
+						"info" : info
+					},function(){
+					});
+				}else{
+					self.initSong.caller.apply(this);
+				}
 				return this;
 			},
 			getState: function(){
@@ -64,6 +78,7 @@ var Player = (function(window,document,$,undefined){
 				return _list;
 			},
 			getNextSongList: function(type,cb){
+				var self = this;
 				$.ajax({
 					"url":"/j/mine/playlist",
 					"method":"GET",
@@ -77,9 +92,16 @@ var Player = (function(window,document,$,undefined){
 						r: Math.round(Math.random()*0xffffffffff).toString(16)
 					},
 					"success": function(data){
-						if(typeof cb === "function"){
-							cb(data);
+						if(type !== "e"){
+							_songIndex = 0;
+							_songList = data.song;
 						}
+						cb && cb(data);
+					},
+					"error": function(){
+						setTimeout(function(){
+							self.getNextSongList(type);	
+						},10000);
 					}
 				});				
 			},
@@ -96,31 +118,38 @@ var Player = (function(window,document,$,undefined){
 				_aud.play();
 				return this;
 			},
-			prev: function(cb){
-				_songIndex =  --_songIndex >=0 ? _songIndex : 0;
-				this.initSong(_list[_songIndex],cb);
+			prev: function(){
+				_index =  --_index >=0 ? _index : 0;
+				this.initSong(_list[_index]);
 				return this;
 			},
 			heart: function(like){
 				this.getNextSongList( like?"r":"u" );
 				return this;
 			},
-			end: function(cb){
-				this.getNextSongList("e");
-				_$playerDom.find("a.btn.next").click();
+			end: function(){
+				var self = this;
+				self.getNextSongList("e");
+				if( _songList[++_songIndex] !== undefined ){
+					self.initSong(_songList[_songIndex]);
+				}else{
+					this.getNextSongList("p",function(info){
+						self.initSong(info.song[0]);
+					});
+				}
 				return this;
 			},
-			trash: function(cb){
+			trash: function(){
 				var self = this;
 				this.getNextSongList("b",function(info){
-					self.initSong(info.song[0],cb);					
+					self.initSong(info.song[0]);					
 				});
 				return this;
 			},
-			next: function(cb){
+			next: function(){
 				var self = this;
 				this.getNextSongList("s",function(info){
-					self.initSong(info.song[0],cb);
+					self.initSong(info.song[0]);
 				});
 				return this;
 			},
@@ -233,7 +262,11 @@ var Player = (function(window,document,$,undefined){
 			}
 		});
 
-		/* event listener : UI binder*/
+		_aud.addEventListener('error',function(){
+			that.end();
+		});
+
+		/* event listener : basic UI binder*/
 		_aud.addEventListener('progress',function(){
 			var len = _aud.buffered.length ? _aud.buffered.length - 1 : 0;
 			_$playerDom.find(".load-progress").width(_$loader.width()*_loadingProgress);

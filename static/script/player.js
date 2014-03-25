@@ -15,7 +15,7 @@ var Player = (function(window,document,$,undefined){
 			_loadingProgress, // the player loading progress
 			_playingProgress, // the player playing progress
 			_volume, // the player volume
-			_loop; // whether loop a song or not 
+			_loop = false; // whether loop a song or not 
 			_aud.autoplay = true;
 		
 		function changeSong(info){
@@ -39,6 +39,9 @@ var Player = (function(window,document,$,undefined){
 				changeItem(".infos .year","text",info.public_time);
 				changeItem(".infos .title-roller a","text",info.title);
 				changeItem(".infos .title-roller a","href","http://music.douban.com"+info.album);
+				changeItem(".download","text", info.title );
+				changeItem(".download","title","下载 : " + info.title + " - " + info.artist );
+				changeItem(".download","href", info.url );
 				$("title").text(info.title + " - 豆瓣FM");
 			}
 		}
@@ -202,7 +205,7 @@ var Player = (function(window,document,$,undefined){
 				if(l === undefined){
 					return _loop;
 				}
-				_loop = !!l;
+				_loop = _aud.loop = !!l;
 				return this;
 			},
 			/* bind && once : use for UI update and other event binds*/
@@ -224,7 +227,7 @@ var Player = (function(window,document,$,undefined){
 			_loadingProgress;
 			_playingProgress = _aud.currentTime / _aud.duration;
 			_volume = _aud.volume * 100;
-			_loop = _aud.loop;
+			_aud.loop = _loop;
 		});
 
 		_aud.addEventListener('play',function(){
@@ -239,11 +242,9 @@ var Player = (function(window,document,$,undefined){
 			_length = _aud.duration;
 		});
 
-		_aud.addEventListener('progress',function(){
+		_aud.addEventListener('timeupdate',function(){
 			var len = _aud.buffered.length ? _aud.buffered.length - 1 : 0;
-			setTimeout(function(){
-				_loadingProgress = _aud.buffered.end(len) / _length;
-			},1000);
+			_loadingProgress = _aud.buffered.end(len) / _length;
 		});
 
 		_aud.addEventListener('timeupdate',function(){

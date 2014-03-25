@@ -1,22 +1,32 @@
 chrome.extension.onMessage.addListener(function(message,sender,sendResponse){
+	// desktop notification
 	if(message.action === "notification"){
-		var info = message.info,
-			notification;
-		if(window.webkitNotifications){
-			notification = window.webkitNotifications.createNotification(
-				info.picture,
-				info.albumtitle,
-				info.artist + ' - ' + info.title
-			);
-			notification.show();
-			console.log(notification)
-			
-			notification.onclick = function(){
-				window.open('http://music.douban.com' + info.album);
+		var info = message.info;
+
+		chrome.notifications.create("",{
+				type : "basic",
+				title: info.albumtitle,
+				message: info.artist + ' - ' + info.title,
+				iconUrl: info.picture
+			},function(id){
+				setTimeout(function(){
+					chrome.notifications.clear(id,function(data){});
+				},3000);
 			}
-			setTimeout(function(){
-				notification.cancel();
-			},3000);
-		}
+		);
+
+		chrome.notifications.onClicked.addListener(function(){
+			window.open('http://music.douban.com' + info.album);
+		});
+	}
+
+	// download song
+	if(message.action === "download"){
+		chrome.downloads.download({
+				url : message.url
+			},function(){
+
+			}
+		);
 	}
 });

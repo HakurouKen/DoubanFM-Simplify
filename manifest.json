@@ -36,6 +36,7 @@
 	],
 	"permissions":[
 		"notifications",
+		"downloads",
 		"*://douban.fm/",
 		"*://*.douban.com/*"
 	]

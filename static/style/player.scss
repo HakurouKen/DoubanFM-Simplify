@@ -6,6 +6,16 @@
 	width: $player_width;
 	height: $img_size;
 	margin: 40px auto;
+	
+	a{
+		color: #53AD53;
+		&:hover,&:active,&:focus{
+			color: #7CCA6F;
+		}
+		&:hover{
+			background: transparent;
+		}
+	}
 
 	div.fm-player{
 		$player_radius: 3px;
@@ -124,14 +134,6 @@
 						text-overflow: ellipsis;
 						text-shadow: 0 0 1px rgba(40,40,40,0.3);
 						cursor: pointer;
-
-						a{
-							color: #53AD53;
-							&:hover,&:active,&:focus,&:visited{
-								color: #53AD53;
-
-							}
-						} 
 			 		}
 				}
 				div.player-wrapper{
@@ -347,6 +349,67 @@
 				color: #333;
 				text-align: center;
 				opacity: 0.8;
+			}
+		}
+	}
+
+	div.extra-btn{
+		position: relative;
+		top: $img_size;
+		font-size: 14px;
+		text-shadow: 0 0 2px rgba(100, 194, 47, 0.5);
+		line-height: 20px;
+		vertical-align: middle;
+
+		a.loop{
+			position: relative;
+			margin-left: 35px;
+			-webkit-transition: all 0.2s ease-out;
+
+			&:before{
+				content: "";
+				display: block;
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				left: -25px;
+				top: -1px;
+				background-image: url(chrome-extension://__MSG_@@extension_id__/dist/image/loop.png);
+			}
+
+			&.on{
+				&:before{
+					background-position: 0 0px;
+				}
+			}
+
+			&.off{
+				color: #333;
+				text-shadow: 0 0 2px rgba(0,0,0,0.5);
+
+				&:hover{
+					color: #222;
+				}
+
+				&:before{
+					background-position: 0 20px;
+				}
+			}
+		}
+
+		a.download{
+			float: right;
+			position: relative;
+
+			&:before{
+				content: "";
+				display: block;
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				left: -25px;
+				top: 0.5px;
+				background-image:  url(chrome-extension://__MSG_@@extension_id__/dist/image/download.png);
 			}
 		}
 	}

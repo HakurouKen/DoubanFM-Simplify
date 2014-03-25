@@ -1,5 +1,5 @@
 var btnBind = function(player){
-	var $player = $("#fm-player-container .fm-player"),
+	var $player = $("#fm-player-container"),
 		$heart = $player.find("a.btn.heart"),
 		$loader = $player.find(".player");
 
@@ -69,4 +69,26 @@ var btnBind = function(player){
 		*/
 		window.open($(this).attr("data-album"));
 	});
+
+	$player.find(".loop").bind('click',function(event){
+		if(player.loop()){
+			player.loop(false);
+			$(this).removeClass('on').addClass('off').text("单曲循环：关");
+		}else{
+			player.loop(true);
+			$(this).removeClass('off').addClass('on').text("单曲循环：开");
+		}
+	});
+
+	$player.find(".download").bind('click',function(event){
+		console.log(this);
+		chrome.extension.sendMessage({
+				"action": "download",
+				"url": this.href
+			},function(){
+
+			}
+		);
+		event.preventDefault();
+	})
 }

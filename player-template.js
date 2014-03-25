@@ -40,4 +40,8 @@
 			</div>
 		</div>
 	</div>
+	<div class="extra-btn">
+		<a href="javascript:void(0)" class="loop off">单曲循环：关</a>
+		<a href="#" class="download" target="_blank"></a>
+	</div>
 </div>

@@ -10,9 +10,21 @@
 	      "*://douban.fm/"
 	      ],
 	    "js" : [
+	      "dist/script/display.min.js",
 	      "dist/script/jquery-1_10_1.min.js",
-	      "dist/script/player.min.js",
+	      "dist/script/jquery-migrate-1_1_1.min.js",
+	      "dist/script/handlebars-v1_3_0.min.js",
+	      "dist/script/jquery_mousewheel.min.js",
+	      "dist/script/jquery_jqdrag.min.js",
+	      "dist/script/jquery_jscrollbar.min.js",
+	      // utils
+	      "dist/script/util.min.js",
+	      // buttons bind
+	      "dist/script/channel.min.js",
 	      "dist/script/bind.min.js",
+	      // define player
+	      "dist/script/player.min.js",
+	      // init all data
 	      "dist/script/init.min.js"
 	      ],
 	      "run_at":"document_end"
@@ -22,6 +34,8 @@
 	      ],
 	  	"css" : [
 	    	"dist/style/reset.min.css",
+	    	"dist/style/frame.min.css",
+	    	"dist/style/channel.min.css",
 	    	"dist/style/player.min.css"
 	    ],
 	    "run_at":"document_idle"
@@ -32,7 +46,7 @@
 	},
 	"web_accessible_resources": [
 		"dist/*",
-		"player-template.js"
+		"template/*"
 	],
 	"permissions":[
 		"notifications",

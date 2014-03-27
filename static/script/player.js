@@ -32,6 +32,9 @@ var Player = (function(window,document,$,undefined){
 
 			if(info){
 				album = /\/subject\//.test(info.album) ? "http://music.douban.com" + info.album : info.album;
+				var title = info.title + " - " + info.artist;
+					title = title.length < 25 ? title : title.substr(0,23)+"...";
+
 				changeItem("div.cover>img","src",info.picture.replace(/\/mpic\//,"\/lpic\/"));
 				changeItem(".cover","data-album","http://music.douban.com"+info.album);
 				changeItem(".infos .artist","text",info.artist);
@@ -39,7 +42,7 @@ var Player = (function(window,document,$,undefined){
 				changeItem(".infos .year","text",info.public_time);
 				changeItem(".infos .title-roller a","text",info.title);
 				changeItem(".infos .title-roller a","href","http://music.douban.com"+info.album);
-				changeItem(".download","text", info.title );
+				changeItem(".download","text", title );
 				changeItem(".download","title","下载 : " + info.title + " - " + info.artist );
 				changeItem(".download","href", info.url );
 				$("title").text(info.title + " - 豆瓣FM");
@@ -89,7 +92,7 @@ var Player = (function(window,document,$,undefined){
 						type: type ? type : "n",
 						sid: _info.sid,
 						pt: Math.round(_aud.currentTime * 10) /10.0,
-						channel: $(".channel_list .channel.selected").data("cid") || 0,
+						channel: $("#fm-html5 ul.channel-list li.channel.selected").data("cid") || 0,
 						pb: 64,
 						from : "mainsite",
 						r: Math.round(Math.random()*0xffffffffff).toString(16)

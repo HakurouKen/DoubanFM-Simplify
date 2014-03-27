@@ -1,0 +1,37 @@
+#fm-html5{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+
+	$pageWidth: 900px;
+
+	div.top-nav{
+		width: $pageWidth;
+		height: 40px;
+		margin: 0 auto;
+	}
+
+	.container{
+		$chlWidth: 260px;
+		width: $pageWidth - $chlWidth;
+		margin: auto;
+		padding-left: $chlWidth;
+		height: 90%;
+		min-height: 500px;
+
+		.col{
+			float: left;
+		}
+
+		div.channel-bar{
+			width: $chlWidth;
+			margin-left: -$chlWidth;
+			height: 100%;
+		}
+
+		div.fm-bar{
+			width: 100%;
+			height: 100%;
+		}
+	}
+}

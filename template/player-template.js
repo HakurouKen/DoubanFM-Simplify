@@ -3,7 +3,7 @@
 		<div class="cover">
 			<img src="" alt="">
 		</div>
-		<div class="container">
+		<div class="player-container">
 			<div class="content">
 				<a class="btn pause"></a>
 				<div class="infos">

@@ -23,9 +23,10 @@ chrome.extension.onMessage.addListener(function(message,sender,sendResponse){
 	// download song
 	if(message.action === "download"){
 		chrome.downloads.download({
-				url : message.url
-			},function(){
-
+				url : message.url,
+				filename : message.name,
+				conflictAction : "uniquify"
+			},function(id){
 			}
 		);
 	}

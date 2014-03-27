@@ -1,4 +1,4 @@
-var btnBind = function(player){
+window.bindPlayer = function(player){
 	var $player = $("#fm-player-container"),
 		$heart = $player.find("a.btn.heart"),
 		$loader = $player.find(".player");
@@ -34,11 +34,11 @@ var btnBind = function(player){
 
 	$player.find(".btn.pause").bind("click",function(event){
 		event.stopPropagation();
-		$(".container").addClass("paused");
+		$(".player-container").addClass("paused");
 		player.pause();
 	});
 
-	$player.delegate('.container.paused', 'click', function(event) {
+	$player.delegate('.player-container.paused', 'click', function(event) {
 		$(this).removeClass('paused');
 		player.resume();
 	});
@@ -84,11 +84,15 @@ var btnBind = function(player){
 		console.log(this);
 		chrome.extension.sendMessage({
 				"action": "download",
-				"url": this.href
+				"url": this.href,
+				"name": this.title.replace("下载 : ","") + "." +
+							( this.href.match(/\.\w+$/) || [""] )[0].substr(1)
 			},function(){
-
 			}
 		);
 		event.preventDefault();
-	})
-}
+	});
+
+	// run once
+	delete window.bindPlayer;
+};

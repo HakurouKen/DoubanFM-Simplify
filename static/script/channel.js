@@ -1,14 +1,41 @@
-window.channelBind = function($channelContainer,cid){
-	var $channelLists = $channelContainer.find("ul.channel-list"),
-		$channels = $channelContainer.find("ul.channel-list li.channel");
+var Channel = (function(window,document,$,undefined){
+	var Channel = function($channelDom,player){
+		var _curChannel;
 
-	$channelLists.delegate('li.channel', 'click', function(event) {
-		$channels.removeClass('selected');
-		$(this).addClass('selected');
-	});
+		return{
+			changeChannel: function(from,to,area){
+				var init = function(){
+					player.getNextSongList('n',function(data){
+						player.initSong(data.song[0]);
+					});
+				};
 
-	$channels.filter("[data-cid=" + (cid||0) + "]").addClass('selected');
+				if( (area === "recent_channels" || area === "favorite_channels") && !$(this).hasClass('selected') ){
+					var ctype;
+					
+					switch (area){
+						case "recent_channels" : 
+							ctype = "r";
+							break;
+						case "favorite_channels" :
+							ctype = "c";
+							break;
+					}
 
-	// run once
-	delete window.channelBind;
-};
+					$.post("/j/channel_select",{
+						"cid" : to,
+						"ctype" : ctype,
+						"ck" : Utils.getCookie("ck")
+					},function(){});
+				}
+
+				$.get( "/j/change_channel?fcid=" + from + "&tcid=" + to + "&area=" + area, function(result){
+					_curChannel = to;
+					(result.r === "0") && init();
+				});
+			}
+		};
+	}
+
+	return Channel;
+})(window,document,jQuery);

@@ -10,15 +10,18 @@
 		$originPlayer.html("");
 
 	// channel init
-	function initChannel($container,cid){
+	function initChannel($container,player,cid){
 		$container = $container || $('body');
-		var ck = Utils.getCookie("ck");
+		cid = cid || 0 ;
+		var ck = Utils.getCookie("ck"),
+			channel;
 		
 		if( ck ){
-			$.get(chrome.extension.getURL("template/channel-template.js")).done(function(source){
+			return $.get(chrome.extension.getURL("template/channel-template.js")).done(function(source){
 				$.get("/j/fav_channels?ck="+ck).done(function(fav){
 					//render
-					var template = Handlebars.compile(source),
+					var $channelListContainer,
+						template = Handlebars.compile(source),
 						channelData = {
 							"channel_list" : [{
 								"channels": [
@@ -29,16 +32,19 @@
 										"id" : "-3",
 										"name" : "我的红心兆赫"
 									}
-								]
+								],
+								"area": "system_channels"
 							},{
 								"title" : "我的收藏",
-								"channels" : fav.channels
+								"channels" : fav.channels,
+								"area": "favorite_channels"
 							}]
 						};
 
 					$container.append( template(channelData) );
+					$channelListContainer = $container.find(".channel-list-container");
 
-					if( $container.find(".channel-list-container").height() > $container.height() ){	
+					if( $channelListContainer.height() > $container.height() ){	
 						$container.jscrollbar({
 							width: 5,
 							color:'rgb(168,168,168)',
@@ -49,7 +55,8 @@
 						});
 					}
 
-					channelBind( $container.find(".channel-list-container") , cid );
+					window.channel = channel = Channel( $channelListContainer , player , cid );
+					bindChannel( $channelListContainer , channel , player ,cid );
 				});
 			});
 		}
@@ -59,7 +66,7 @@
 	// player init
 	function initPlayer($container){
 		$container = $container || $('body');
-		$.get(chrome.extension.getURL("template/player-template.js")).done(function(tmpl){
+		return $.get(chrome.extension.getURL("template/player-template.js")).done(function(tmpl){
 			$container.append(tmpl);
 			window.player = Player("#fm-player-container");
 			bindPlayer(player);
@@ -101,8 +108,9 @@
 
 		var FM = $("#fm-html5");
 
-		initChannel( FM.find(".channel-bar") , 0 );
-		initPlayer( FM.find(".fm-bar") );
+		initPlayer( FM.find(".fm-bar") ).done(function(){
+			initChannel( FM.find(".channel-bar") , player , 0 );
+		});
 	});
 
 })(window,document,jQuery);

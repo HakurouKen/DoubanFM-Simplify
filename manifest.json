@@ -20,10 +20,10 @@
 	      // utils
 	      "dist/script/util.min.js",
 	      // buttons bind
-	      "dist/script/channel.min.js",
 	      "dist/script/bind.min.js",
-	      // define player
+	      // define player && channel
 	      "dist/script/player.min.js",
+	      "dist/script/channel.min.js",
 	      // init all data
 	      "dist/script/init.min.js"
 	      ],

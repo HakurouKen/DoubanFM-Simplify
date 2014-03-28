@@ -7,7 +7,7 @@
 				<span class="spliter"></span>
 			</h3>
 			{{/if}}
-			<ul class="channel-list">
+			<ul class="channel-list" data-area='{{this.area}}'>
 				{{#each this.channels}}
 				<li class="channel" data-intro="{{this.intro}}" data-songNum="{{this.song_num}}" data-cid="{{this.id}}">
 					<a class="channel-name-container">

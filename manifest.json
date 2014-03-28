@@ -3,7 +3,7 @@
 
 	"name":"douban.fm - HTML5",
 	"description": "Replace the flash player to HTML5",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"content_scripts" : [
 	  {
 	    "matches" : [

@@ -18,7 +18,9 @@
 		
 		if( ck ){
 			return $.get(chrome.extension.getURL("template/channel-template.js")).done(function(source){
-				$.get("/j/fav_channels?ck="+ck).done(function(fav){
+				$.when(
+					$.get("/j/fav_channels?ck="+ck)				
+				).done(function(fav){
 					//render
 					var $channelListContainer,
 						template = Handlebars.compile(source),
@@ -33,11 +35,11 @@
 										"name" : "我的红心兆赫"
 									}
 								],
-								"area": "system_channels"
+								"area": "system_chls"
 							},{
 								"title" : "我的收藏",
 								"channels" : fav.channels,
-								"area": "favorite_channels"
+								"area": "fav_chls"
 							}]
 						};
 

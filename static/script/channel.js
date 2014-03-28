@@ -10,14 +10,14 @@ var Channel = (function(window,document,$,undefined){
 					});
 				};
 
-				if( (area === "recent_channels" || area === "favorite_channels") && !$(this).hasClass('selected') ){
+				if( area === "recent_chls" || area === "fav_chls" ){
 					var ctype;
 					
 					switch (area){
-						case "recent_channels" : 
+						case "recent_chls" : 
 							ctype = "r";
 							break;
-						case "favorite_channels" :
+						case "fav_chls" :
 							ctype = "c";
 							break;
 					}

@@ -81,7 +81,7 @@ window.bindPlayer = function(player){
 	});
 
 	$player.find(".download").bind('click',function(event){
-		console.log(this);
+		event.preventDefault();
 		chrome.extension.sendMessage({
 				"action": "download",
 				"url": this.href,
@@ -90,29 +90,34 @@ window.bindPlayer = function(player){
 			},function(){
 			}
 		);
-		event.preventDefault();
 	});
 
 	// run once
 	delete window.bindPlayer;
 };
 
-window.bindChannel = function($channelContainer,channel,player,cid){
+window.bindChannel = function($channelContainer,channel,player){
 	var $channelLists = $channelContainer.find("ul.channel-list"),
 		$channels = $channelContainer.find("ul.channel-list li.channel");
 
 	$channelLists.delegate('li.channel', 'click', function(event) {
-		var fcid = $channels.filter('.selected').data('cid'),
-			cid = $(this).data('cid'),
-			area = $(this).parent('ul.channel-list').data('area');
+		var fcid,
+			cid,
+			area;
 
-		channel.changeChannel(fcid,cid,area);
+		if( !$(this).hasClass('selected') ){
+			var fcid = $channels.filter('.selected').data('cid'),
+				cid = $(this).data('cid'),
+				area = $(this).parent('ul.channel-list').data('area');
 
-		$channels.removeClass('selected');
-		$(this).addClass('selected');
+			channel.changeChannel(fcid,cid,area);
+
+			$channels.removeClass('selected');
+			$(this).addClass('selected');
+		}
 	});
 
-	$channels.filter("[data-cid=" + (cid||0) + "]").addClass('selected');
+	$channels.filter("[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
 
 	// run once
 	delete window.channelBind;

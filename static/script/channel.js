@@ -1,8 +1,11 @@
 var Channel = (function(window,document,$,undefined){
 	var Channel = function($channelDom,player){
-		var _curChannel;
+		var _curChannel = 0;
 
 		return{
+			getCurChannel: function(){
+				return _curChannel;
+			},
 			changeChannel: function(from,to,area){
 				var init = function(){
 					player.getNextSongList('n',function(data){

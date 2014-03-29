@@ -1,12 +1,14 @@
 (function(window,document,$,undefined){
-	var $originPlayer = $("#radioplayer"),
+	var $body = $('body'),
+		$originPlayer = $("#radioplayer"),
 		originPlayerHTML = $originPlayer.clone().wrap('<div></div>').parent().html(),
 		$originPage = $("body").contents(),
-		$player = $("#fm-player-container");
+		$player = $("#fm-player-container"),
+		$FM;
 
 		$originPage.wrapAll('<div id="origin"></div>');
 
-		var $wrapper = $("#origin").css("display","none");
+		var $wrapper = $("#origin").fadeOut(1000);
 		$originPlayer.html("");
 
 	// channel init
@@ -72,6 +74,8 @@
 			$container.append(tmpl);
 			window.player = Player("#fm-player-container");
 			bindPlayer(player);
+
+			// get the first song list
 			$.get("/j/change_channel?fcid=undefined&tcid=" + 
 					( $("#fm-html5 ul.channel-list li.channel.selected").data('cid') || 0 ) + 
 					"&area=songchannel").done(
@@ -87,32 +91,48 @@
 		});
 	}
 
+	// frame init
+	$.get(chrome.extension.getURL("template/frame-template.js")).done(function(html){
+		$body.append(html);
+
+		$FM = $("#fm-html5").css('display','none');
+
+		initPlayer( $FM.find(".fm-bar") ).done(function(){
+			initChannel( $FM.find(".channel-bar") , player ).done(function(){
+				$FM.fadeIn(1000);
+			});
+		});
+	});
+
 	// change between original douban.fm and plugin
-	function pageToogle(origin){
+	function pageToggle(origin){
 		if(origin){
-			player.pause();
-			$wrapper.fadeIn(2000);
-			$player.fadeOut(2000);
+			$FM.fadeOut(1000,function(){
+				$('.fm-player a.btn.pause').click();
+				$wrapper.fadeIn(1000);
+			});
 			$originPlayer.html(originPlayerHTML);
 		}else{
-			$player.fadeIn(2000,function(){
-				player.play();
+			$wrapper.fadeOut(1000,function(){
+				$('.player-container.paused').click();
+				$FM.fadeIn(1000);
+				$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
 			});
-			$wrapper.fadeOut(2000);
 			$originPlayer.html("");
 		}
 	}
 
-	// frame init
-	$.get(chrome.extension.getURL("template/frame-template.js")).done(function(html){
-		$("body").append(html);
-		$("body").fadeIn(2000);
+	// toggle button init
+	$.get(chrome.extension.getURL("template/button-template.js")).done(function(html){
+		$body.append(html);
 
-		var FM = $("#fm-html5");
+		$('#toggleView').toggle(function() {
+			pageToggle(true);
+		}, function() {
+			pageToggle(false);
 
-		initPlayer( FM.find(".fm-bar") ).done(function(){
-			initChannel( FM.find(".channel-bar") , player , 0 );
 		});
+
 	});
 
 })(window,document,jQuery);

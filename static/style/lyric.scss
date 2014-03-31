@@ -4,19 +4,29 @@
 		margin: 40px auto;
 		box-shadow: 0 0 20px rgba(0,0,0,0.2);
 		border-radius: 3px;
+		$testHeight: 300px;
+		height: $testHeight;
 
-		ul.lyrics{
-			text-align: center;
-			padding: 20px;
+		.lyric-wrapper{
+			overflow: hidden;
+			position: relative;
+			$gap: 25px;
+			height: $testHeight - 2*$gap;
+			top: $gap;
 
-			li.lrc{
-				line-height: 25px;
-				color: #707070;
-				text-shadow: 0 0 1px rgba(0,0,0,0.25);
+			ul.lyrics{
+				text-align: center;
+				position: relative;
 
-				&.on{
-					color: #7CCA6F;
-					text-shadow: 0 0 2px rgba(151,213,151,.5);
+				li.lrc{
+					line-height: 25px;
+					color: #707070;
+					text-shadow: 0 0 1px rgba(0,0,0,0.25);
+
+					&.on{
+						color: #7CCA6F;
+						text-shadow: 0 0 2px rgba(151,213,151,.5);
+					}
 				}
 			}
 		}

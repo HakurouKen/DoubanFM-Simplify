@@ -1,44 +1,11 @@
 (function(window,document,$,undefined){
 	var $body = $('body'),
 		$originPlayer = $("#radioplayer"),
-		originPlayerHTML = $originPlayer.clone().wrap('<div></div>').parent().html(),
 		$originPage = $("body").contents(),
-		$player = $("#fm-player-container"),
 		$FM,
 		$wrapper;
 
 	window.isOrginal;
-
-	// change between original douban.fm and plugin
-	function pageToggle(){
-		if(!isOrginal){
-			$FM.fadeOut(1000,function(){
-				$('.fm-player a.btn.pause').click();
-
-				// prevent the origal player from disloation
-				$wrapper.find('#fm-section').css('margin-top','0px');
-				$wrapper.find('#fm-section2').css('margin-top','0px');
-				$wrapper.find('#fm-section-app-entry').css('margin-top','0px');
-				$wrapper.find('#fm-bg').css('margin-top','0px');
-
-				$wrapper.fadeIn(1000,function(){
-					window.isOrginal = true;
-				});
-			});
-			$originPlayer.html(originPlayerHTML);
-		}else{
-			$wrapper.fadeOut(1000,function(){
-				$('.player-container.paused').click();
-				$FM.fadeIn(1000,function(){
-					window.isOrginal = false;
-					$(window).trigger('resize');
-				});
-
-				$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
-			});
-			$originPlayer.html("");
-		}
-	}
 
 	// channel init
 	function initChannel($container,player,cid){
@@ -141,9 +108,7 @@
 			function(html){
 				$body.append(html);
 
-				$('#toggleView').click(function(){
-					pageToggle();
-				})
+				bindToggleBtn('#toggleView',$FM,$wrapper,$originPlayer);
 			}
 		);
 	}
@@ -153,6 +118,7 @@
 			initPlayer( $FM.find(".fm-bar") ).done(function(){
 				initChannel( $FM.find(".channel-bar") , player ).done(function(){
 					initToggleBtn();
+					bindHotkey('#fm-player-container');
 					$FM.fadeIn(1000);
 				});
 			});

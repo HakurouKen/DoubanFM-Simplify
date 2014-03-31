@@ -11,7 +11,7 @@ chrome.extension.onMessage.addListener(function(message,sender,sendResponse){
 			},function(id){
 				setTimeout(function(){
 					chrome.notifications.clear(id,function(data){});
-				},3000);
+				},5000);
 			}
 		);
 

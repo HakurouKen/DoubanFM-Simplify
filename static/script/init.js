@@ -4,12 +4,33 @@
 		originPlayerHTML = $originPlayer.clone().wrap('<div></div>').parent().html(),
 		$originPage = $("body").contents(),
 		$player = $("#fm-player-container"),
-		$FM;
+		$FM,
+		$wrapper;
 
-		$originPage.wrapAll('<div id="origin"></div>');
+	window.isOrginal;
 
-		var $wrapper = $("#origin").fadeOut(1000);
-		$originPlayer.html("");
+	// change between original douban.fm and plugin
+	function pageToggle(){
+		if(!isOrginal){
+			$FM.fadeOut(1000,function(){
+				$('.fm-player a.btn.pause').click();
+				$wrapper.fadeIn(1000,function(){
+					window.isOrginal = true;
+				}).css('position','relative').css('position','static');
+			});
+			$originPlayer.html(originPlayerHTML);
+		}else{
+			$wrapper.fadeOut(1000,function(){
+				$('.player-container.paused').click();
+				$FM.fadeIn(1000,function(){
+					window.isOrginal = false;
+				});
+
+				$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
+			});
+			$originPlayer.html("");
+		}
+	}
 
 	// channel init
 	function initChannel($container,player,cid){
@@ -92,47 +113,44 @@
 	}
 
 	// frame init
-	$.get(chrome.extension.getURL("template/frame-template.js")).done(function(html){
-		$body.append(html);
+	function initFrame(){
+		$originPage.wrapAll('<div id="origin"></div>');
 
-		$FM = $("#fm-html5").css('display','none');
-
-		initPlayer( $FM.find(".fm-bar") ).done(function(){
-			initChannel( $FM.find(".channel-bar") , player ).done(function(){
-				$FM.fadeIn(1000);
-			});
+		$wrapper = $("#origin").fadeOut(1000,function(){
+			isOrginal = false;
 		});
-	});
+		$originPlayer.html("");
 
-	// change between original douban.fm and plugin
-	function pageToggle(origin){
-		if(origin){
-			$FM.fadeOut(1000,function(){
-				$('.fm-player a.btn.pause').click();
-				$wrapper.fadeIn(1000);
-			});
-			$originPlayer.html(originPlayerHTML);
-		}else{
-			$wrapper.fadeOut(1000,function(){
-				$('.player-container.paused').click();
-				$FM.fadeIn(1000);
-				$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
-			});
-			$originPlayer.html("");
-		}
+		return 	$.get(chrome.extension.getURL("template/frame-template.js")).done(function(html){
+			$body.append(html);
+			$FM = $("#fm-html5").css('display','none');
+		});
 	}
 
 	// toggle button init
-	$.get(chrome.extension.getURL("template/button-template.js")).done(function(html){
-		$body.append(html);
+	function initToggleBtn(){
+		return $.get(chrome.extension.getURL("template/button-template.js")).done(
+			function(html){
+				$body.append(html);
 
-		$('#toggleView').toggle(function() {
-			pageToggle(true);
-		}, function() {
-			pageToggle(false);
+				$('#toggleView').click(function(){
+					pageToggle();
+				})
+			}
+		);
+	}
 
+	function init(){
+		initFrame().then(function(){
+			initPlayer( $FM.find(".fm-bar") ).done(function(){
+				initChannel( $FM.find(".channel-bar") , player ).done(function(){
+					initToggleBtn();
+					$FM.fadeIn(1000);
+				});
+			});
 		});
+	}
 
-	});
+	init();
 
 })(window,document,jQuery);

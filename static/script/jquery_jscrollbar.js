@@ -5,6 +5,13 @@
  * Email: 97532151@qq.com
  * Site: http://sanjh.cn
  */
+
+/**
+ * User: Hakurouken
+ * Modify: Add a resize listener
+ */
+
+
 ;(function($){
     /**
      <p>创建一个滚动条，用户只需要传入需要滚动的元素，支持垂直滚动条和水平滚动条</p>
@@ -60,6 +67,12 @@
         }
         return this.each(function(){
             var jsb = new JScrollBar($(this),$.extend({},defaults,options));
+
+            // add a resize listener
+            $(window).resize(function(){
+                jsb.updateUI();
+            });
+
             $(this).data(OBJ_NAME,jsb);
         });
 

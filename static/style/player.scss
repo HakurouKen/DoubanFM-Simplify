@@ -7,6 +7,7 @@
 		width: $player_width;
 		height: $img_size;
 		margin: 40px auto;
+		-webkit-user-select: none;
 		
 		a{
 			color: #53AD53;

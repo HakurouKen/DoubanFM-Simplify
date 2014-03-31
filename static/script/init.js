@@ -14,9 +14,16 @@
 		if(!isOrginal){
 			$FM.fadeOut(1000,function(){
 				$('.fm-player a.btn.pause').click();
+
+				// prevent the origal player from disloation
+				$wrapper.find('#fm-section').css('margin-top','0px');
+				$wrapper.find('#fm-section2').css('margin-top','0px');
+				$wrapper.find('#fm-section-app-entry').css('margin-top','0px');
+				$wrapper.find('#fm-bg').css('margin-top','0px');
+
 				$wrapper.fadeIn(1000,function(){
 					window.isOrginal = true;
-				}).css('position','relative').css('position','static');
+				});
 			});
 			$originPlayer.html(originPlayerHTML);
 		}else{

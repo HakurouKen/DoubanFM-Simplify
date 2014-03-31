@@ -31,6 +31,7 @@
 				$('.player-container.paused').click();
 				$FM.fadeIn(1000,function(){
 					window.isOrginal = false;
+					$(window).trigger('resize');
 				});
 
 				$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');

@@ -1,40 +1,40 @@
-(function(window,document,$,undefined){
+(function(window, document, $, undefined) {
 
-	window.bindPlayer = function(player){
+	window.bindPlayer = function(player) {
 		var $player = $("#fm-player-container"),
 			$heart = $player.find("a.btn.heart"),
 			$loader = $player.find(".player");
 
-		$heart.bind("click",function(){
-			if( $(this).toggleClass('hearted').hasClass("hearted") ){
+		$heart.bind("click", function() {
+			if ($(this).toggleClass('hearted').hasClass("hearted")) {
 				player.heart(true);
-			}else{
+			} else {
 				player.heart(false);
 			}
 		});
 
-		player.bind("play",function(){
+		player.bind("play", function() {
 			var info = player.getSongInfo();
-			if( info.like == 1 ){
+			if (info.like == 1) {
 				$heart.addClass('hearted');
-			}else{
+			} else {
 				$heart.removeClass('hearted');
 			}
 		});
 
-		$player.find("a.btn.trash").bind("click",function(){
+		$player.find("a.btn.trash").bind("click", function() {
 			player.trash();
 		});
 
-		$player.find("a.btn.next").bind("click",function(){
+		$player.find("a.btn.next").bind("click", function() {
 			player.next();
 		});
 
-		$player.find("a.btn.prev").bind("click",function(){
+		$player.find("a.btn.prev").bind("click", function() {
 			player.prev();
 		});
 
-		$player.find(".btn.pause").bind("click",function(event){
+		$player.find(".btn.pause").bind("click", function(event) {
 			event.stopPropagation();
 			$(".player-container").addClass("paused");
 			player.pause();
@@ -45,24 +45,24 @@
 			player.resume();
 		});
 
-		$player.find(".volume-wrapper").bind('click',function(event){
+		$player.find(".volume-wrapper").bind('click', function(event) {
 			event.stopPropagation();
 			event = event ? event : window.event;
 			var $vol = $(this).find(".volume"),
 				$curVal = $vol.find('.current-volume'),
 				per = (event.clientX - $vol.offset().left) / $vol.width();
 
-			player.vol(per*100);
-			$curVal.css("width",per*$vol.width()+"px");
+			player.vol(per * 100);
+			$curVal.css("width", per * $vol.width() + "px");
 		});
 
-		$player.find("div.player-wrapper").bind('click',function(event){
+		$player.find("div.player-wrapper").bind('click', function(event) {
 			event = event ? event : window.event;
 			var newProgress = (event.clientX - $loader.offset()["left"]) / $loader.width();
-			player.jumpTo( newProgress*100 + "%" );
+			player.jumpTo(newProgress * 100 + "%");
 		});
 
-		$player.find(".cover").bind('click',function(event){
+		$player.find(".cover").bind('click', function(event) {
 			/*
 			use
 				$(this).data("album")
@@ -72,33 +72,31 @@
 			window.open($(this).attr("data-album"));
 		});
 
-		$player.find(".loop").bind('click',function(event){
-			if(player.loop()){
+		$player.find(".loop").bind('click', function(event) {
+			if (player.loop()) {
 				player.loop(false);
 				$(this).removeClass('on').addClass('off').text("单曲循环：关");
-			}else{
+			} else {
 				player.loop(true);
 				$(this).removeClass('off').addClass('on').text("单曲循环：开");
 			}
 		});
 
-		$player.find(".download").bind('click',function(event){
+		$player.find(".download").bind('click', function(event) {
 			event.preventDefault();
 			chrome.extension.sendMessage({
-					"action": "download",
-					"url": this.href,
-					"name": this.title.replace("下载 : ","") + "." +
-								( this.href.match(/\.\w+$/) || [""] )[0].substr(1)
-				},function(){
-				}
-			);
+				"action": "download",
+				"url": this.href,
+				"name": this.title.replace("下载 : ", "") + "." +
+					(this.href.match(/\.\w+$/) || [""])[0].substr(1)
+			}, function() {});
 		});
 
 		// run once
 		delete window.bindPlayer;
 	};
 
-	window.bindChannel = function($channelContainer,channel,player){
+	window.bindChannel = function($channelContainer, channel, player) {
 		var $channelLists = $channelContainer.find("ul.channel-list"),
 			$channels = $channelContainer.find("ul.channel-list li.channel");
 
@@ -107,71 +105,71 @@
 				cid,
 				area;
 
-			if( !$(this).hasClass('selected') ){
+			if (!$(this).hasClass('selected')) {
 				var fcid = $channels.filter('.selected').data('cid'),
 					cid = $(this).data('cid'),
 					area = $(this).parent('ul.channel-list').data('area');
 
-				channel.changeChannel(fcid,cid,area);
+				channel.changeChannel(fcid, cid, area);
 
 				$channels.removeClass('selected');
 				$(this).addClass('selected');
 			}
 		});
 
-		$channels.filter("[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
+		$channels.filter("[data-cid=" + (channel.getCurChannel() || 0) + "]").addClass('selected');
 
 		// run once
 		delete window.channelBind;
 	};
 
-	window.bindToggleBtn = function(selector,$FM,$wrapper,$originPlayer){
+	window.bindToggleBtn = function(selector, $FM, $wrapper, $originPlayer) {
 		var originPlayerHTML = $originPlayer.clone().wrap('<div></div>').parent().html();
-		
+
 		console.log($originPlayer.html());
 		// change between original douban.fm and plugin
-		function pageToggle($FM,$wrapper,$originPlayer){
-			if(!isOrginal){
-				$FM.fadeOut(1000,function(){
+		function pageToggle($FM, $wrapper, $originPlayer) {
+			if (!isOrginal) {
+				$FM.fadeOut(1000, function() {
 					$('.fm-player a.btn.pause').click();
 
 					// prevent the origal player from disloation
-					$wrapper.find('#fm-section').css('margin-top','0px');
-					$wrapper.find('#fm-section2').css('margin-top','0px');
-					$wrapper.find('#fm-section-app-entry').css('margin-top','0px');
-					$wrapper.find('#fm-bg').css('margin-top','0px');
+					$wrapper.find('#fm-section').css('margin-top', '0px');
+					$wrapper.find('#fm-section2').css('margin-top', '0px');
+					$wrapper.find('#fm-section-app-entry').css('margin-top', '0px');
+					$wrapper.find('#fm-bg').css('margin-top', '0px');
 
-					$wrapper.fadeIn(1000,function(){
+					$wrapper.fadeIn(1000, function() {
 						window.isOrginal = true;
 					});
 				});
 				$originPlayer.html(originPlayerHTML);
-			}else{
-				$wrapper.fadeOut(1000,function(){
+			} else {
+				$wrapper.fadeOut(1000, function() {
 					$('.player-container.paused').click();
-					$FM.fadeIn(1000,function(){
+					$FM.fadeIn(1000, function() {
 						window.isOrginal = false;
 						$(window).trigger('resize');
 					});
 
-					$FM.find("li[data-cid=" + ( channel.getCurChannel() || 0 ) + "]").addClass('selected');
+					$FM.find("li[data-cid=" + (channel.getCurChannel() || 0) + "]").addClass('selected');
 				});
 				$originPlayer.html("");
 			}
 		}
 
-		$('#toggleView').click(function(){
-			pageToggle($FM,$wrapper,$originPlayer);
+		$('#toggleView').click(function() {
+			pageToggle($FM, $wrapper, $originPlayer);
 		})
 
 		delete window.bindToggleBtn;
 	};
 
-	window.bindHotkey = function(selector){
-		var $playerDom  = $(selector);
-		$('body').bind('keydown',function(event){
-			if(!window.isOrginal){
-				switch(event.keyCode){
+	window.bindHotkey = function(selector) {
+		var $playerDom = $(selector);
+		$('body').bind('keydown', function(event) {
+			if (!window.isOrginal) {
+				switch (event.keyCode) {
 					case 70: // f(avorite)
 						$playerDom.find('a.heart').click();
 						break;
@@ -201,7 +199,7 @@
 					case 87: // do(w)nload
 						$playerDom.find('a.download').click();
 						break;
-						
+
 					default:
 						break;
 				}
@@ -211,4 +209,4 @@
 		delete window.bindHotkey;
 	};
 
-})(window,document,jQuery);
+})(window, document, jQuery);

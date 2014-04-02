@@ -17,14 +17,14 @@ var Utils = {
         return;
     },
 
-    "setCookie": function( paras , expires , domin , path ) {
-    	var d = new Date(),
-    		cur;
-    		d.setTime( d.getTime() + (f||30)*24*60*60*1000 ),
-    		expiresTime = "; expires=" + b.toGMTString();
+    "setCookie": function(paras, expires, domin, path) {
+        var d = new Date(),
+            cur;
+        d.setTime(d.getTime() + (f || 30) * 24 * 60 * 60 * 1000),
+        expiresTime = "; expires=" + b.toGMTString();
 
-    	for(cur in paras){
-    		document.cookie = paras + "=" + paras[cur] + a + "; domain=" + (d || "douban.com") + "; path=" + (e || "/");
-    	}
+        for (cur in paras) {
+            document.cookie = paras + "=" + paras[cur] + a + "; domain=" + (d || "douban.com") + "; path=" + (e || "/");
+        }
     }
 }

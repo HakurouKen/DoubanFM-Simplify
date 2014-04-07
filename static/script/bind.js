@@ -220,6 +220,11 @@
 			$lyricDom.height(remain-30);
 			$lyricDom.find('.lyric-wrapper').height(remain-30-50);
 		});
+
+		$lyricDom.bind('mousewheel',function(event,delta){
+			lyric.fix(delta/20);
+		});
+
 		delete bindLyric;
 	}
 

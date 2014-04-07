@@ -2,7 +2,3 @@
 /node_modules/
 /.sass-cache/
 /html/
-
-# files
-Gruntfile.js
-package.json

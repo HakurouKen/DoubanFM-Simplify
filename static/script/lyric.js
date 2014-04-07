@@ -5,6 +5,7 @@ var Lyric = (function(window, document, $, undefined) {
 			_$lrcDom = $dom || $('body'),
 			_$lrcList = _$lrcDom.find('ul.lyrics'),
 			_timeStamps = [],
+			_prefix = 0,
 			_lrcNow = function(time,start,end){
 				var len = _timeStamps.length,
 					start = start || 0,
@@ -63,8 +64,9 @@ var Lyric = (function(window, document, $, undefined) {
 		var l = {
 			initLrc: function(lrc){
 				_$lrcList.empty().css('margin-top','0px');
-				_$lrcDom.find('.lyric-wrapper').removeClass('none')
+				_$lrcDom.find('.lyric-wrapper').removeClass('none');
 				_lrc = lrc || [];
+				_prefix = 0;
 				var	lrcHTML = "";
 				if(_lrc.length){
 					_timeStamps = Array.prototype.map.call( _lrc , function(l){
@@ -88,12 +90,15 @@ var Lyric = (function(window, document, $, undefined) {
 			},
 			jumpTo: function(time){
 				var animationPrefix = 400,
-					now = _lrcNow(time*1000 + animationPrefix),
+					now = _lrcNow(time*1000 + animationPrefix + _prefix),
 					offset = now.offset();
 				_$lrcList.css('margin-top','-'+offset+'px');
 				now.lines().removeClass('on');
 				now.thisLine().addClass('on');
 				return this;
+			},
+			fix: function(prefix){
+				_prefix += prefix*1000;
 			}
 		};
 

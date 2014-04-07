@@ -209,4 +209,18 @@
 		delete window.bindHotkey;
 	};
 
+	window.bindLyric = function(lyric,$FM,$lyricDom){
+		var $container = $FM.find('.fm-bar'),
+			$player = $FM.find('#fm-player-container');
+		
+		$(window).resize(function(){
+			var remain = $container.height() - $player.height() 
+						- parseInt($player.css('margin-top')) - parseInt($player.css('margin-bottom'));
+
+			$lyricDom.height(remain-30);
+			$lyricDom.find('.lyric-wrapper').height(remain-30-50);
+		});
+		delete bindLyric;
+	}
+
 })(window, document, jQuery);

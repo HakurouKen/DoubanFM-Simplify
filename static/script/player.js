@@ -74,6 +74,9 @@ var Player = (function(window,document,$,undefined){
 			getState: function(){
 				return _state;
 			},
+			getLength: function(){
+				return _length;
+			},
 			getSongInfo: function(){
 				return _info;
 			},

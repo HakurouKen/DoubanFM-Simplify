@@ -4,24 +4,47 @@
 		margin: 40px auto;
 		box-shadow: 0 0 20px rgba(0,0,0,0.2);
 		border-radius: 3px;
-		$testHeight: 300px;
-		height: $testHeight;
+		$originHeight: 300px;
+		height: $originHeight;
+		min-height: 220px;
 
 		.lyric-wrapper{
 			overflow: hidden;
 			position: relative;
+			width: 490px;
+			margin: 0 auto;
 			$gap: 25px;
-			height: $testHeight - 2*$gap;
+			height: $originHeight - 2*$gap;
 			top: $gap;
+	
+			&.none{
+				&:after{
+					position: absolute;
+					content: "No Lyrics Founded...";
+					top: 50%;
+					line-height: 20px;
+					font-size: 20px;
+					margin-top: -10px;
+					width: 100%;
+					text-align:center;
+					color: rgba(60,60,60,0.3);
+					text-shadow: 0 0 2px rgba(0,0,0,0.3);
+				}
+			}
 
 			ul.lyrics{
 				text-align: center;
 				position: relative;
+				top: 50%;
+				-webkit-transition: margin .5s ease-out;
+				transition: margin .5s ease-out;
 
 				li.lrc{
 					line-height: 25px;
 					color: #707070;
 					text-shadow: 0 0 1px rgba(0,0,0,0.25);
+					-webkit-transition: all .5s ease-in-out;
+					transition: all .5s ease-in-out;
 
 					&.on{
 						color: #7CCA6F;

@@ -113,13 +113,35 @@
 		);
 	}
 
+	// lyric init
+	function initLyric($container,player){
+		$container = $container || $('body');
+		return $.get(chrome.extension.getURL("template/lyric-template.js")).done(
+			function(html){
+				$container.append(html);
+			var $player = $FM.find('#fm-player-container'),
+				remain = $container.height() - $player.height() 
+						- parseInt($player.css('margin-top')) - parseInt($player.css('margin-bottom')),
+				$lyricDom = $FM.find('.lyric-container');
+				$lyricDom.height(remain-30);
+				$lyricDom.find('.lyric-wrapper').height(remain-30-50);
+			}
+		);
+	}
+
 	function init(){
 		initFrame().then(function(){
 			initPlayer( $FM.find(".fm-bar") ).done(function(){
+				bindHotkey('#fm-player-container');
+				$FM.fadeIn(1000);
+				initToggleBtn();
+
 				initChannel( $FM.find(".channel-bar") , player ).done(function(){
-					initToggleBtn();
-					bindHotkey('#fm-player-container');
-					$FM.fadeIn(1000);
+				});
+
+				initLyric( $FM.find('.fm-bar') , player ).done(function(){
+					window.lyric = Lyric( player,$FM.find('.lyric-container') );
+					bindLyric( lyric , $FM , $FM.find('.lyric-container') );
 				});
 			});
 		});

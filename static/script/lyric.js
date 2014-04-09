@@ -1,11 +1,83 @@
 var Lyric = (function(window, document, $, undefined) {
 
+	var getBaiduLrc = function(info,cb,failcb){
+		var	getSug = function(){
+				return $.get(
+					'http://sug.music.baidu.com/info/suggestion?format=json&version=2&from=0&word=' + info.title + "-" + info.artist
+				);
+			},
+			getInfo = function(sug){
+				var result = JSON.parse(sug),
+					id = (result.data.song[0] || {}).songid;
+
+				if(id){
+					return $.ajax({
+						url: 'http://play.baidu.com/data/music/songlink',
+						method: 'post',
+						data: {
+							'songIds':id
+						},
+						dataType: 'json'
+					});
+				}
+				return $.Deferred().reject();
+			},
+			getLrc = function(info){
+				var lrcLink = info.data.songList[0].lrcLink;
+				if(lrcLink){
+					return $.get('http://play.baidu.com/'+lrcLink)
+				}
+				return $.Deferred().reject();
+			},
+			format = function(raw){
+				 var rawArr = raw.split('\n'),
+				 	i=0,
+				 	len = rawArr.length,
+				 	checker = /^\[\d+:\d+(.\d+)\]/,
+				 	timeStamp = "",
+				 	cur,
+				 	curTime,
+				 	lrc = [];
+
+				 for( ; i < len ; i++ ){
+				 	if( checker.test(rawArr[i]) ){
+				 		timeStamp = rawArr[i].match(checker)[0];
+						cur = {},
+				 		cur.lrc = rawArr[i].replace(timeStamp,"");
+						curTime = 0;
+				 		timeStamp.replace(/[\[\]]/g,"").split(":").forEach(function(t,i){
+				 			curTime = curTime*60 + parseFloat(t,10);
+				 		});
+				 		curTime = curTime*1000;
+				 		cur.time = curTime;
+
+				 		lrc.push(cur);
+				 	}
+				 }
+				
+				 return lrc;
+			}
+
+		failcb = failcb || function(){};
+
+		return getSug().done(function(sug){
+			getInfo(sug).done(function(info){
+
+				getLrc(info).done(function(raw){
+					cb( format(raw) , raw );
+				}).fail(failcb);
+
+			}).fail(failcb);
+		});
+	};
+
 	var Lyric = function(player,$dom) {
 		var _lrc = [],
 			_$lrcDom = $dom || $('body'),
 			_$lrcList = _$lrcDom.find('ul.lyrics'),
 			_timeStamps = [],
 			_prefix = 0,
+			_freezed = false,
 			_lrcNow = function(time,start,end){
 				var len = _timeStamps.length,
 					start = start || 0,
@@ -99,41 +171,36 @@ var Lyric = (function(window, document, $, undefined) {
 			},
 			fix: function(prefix){
 				_prefix += prefix*1000;
+			},
+			freeze: function(){
+				_freezed = true;
+			},
+			unfreeze: function(){
+				_freezed = false;
 			}
 		};
 
 		player.bind('loadstart',function(){
 			var info = player.getSongInfo();
-			$.ajax({
-				'type':'post',
-				'url': 'http://dblrc.sinaapp.com/q',
-				'data': {
-					'song_name': info.title,
-					'artist': info.artist
-				},
-				'beforeSend': function(){
-				},
-				'success': function(data){
-					var lrc = JSON.parse(data);
-					if(lrc.length){
-						l.initLrc(lrc);
-					}else{
-						l.initLrc();
-					}
-				},
-				'error': function(){
-					l.initLrc();
-				}
+			l.freeze();
+
+			getBaiduLrc(info,function(lrc,raw){
+				l.initLrc(lrc);
+				l.unfreeze();
+			},function(){
+				l.initLrc();
 			});
 		});
 
 		player.bind('timeupdate',function(){
-			l.jumpTo(player.getCurTime());
+			!_freezed && l.jumpTo(player.getCurTime());
 		});
 
 		return l;
-	}
+	};
 
 	return Lyric;
 
 })(window, document, jQuery);
+
+

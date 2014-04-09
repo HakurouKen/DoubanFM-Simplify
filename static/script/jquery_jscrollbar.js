@@ -9,6 +9,7 @@
 /**
  * User: Hakurouken
  * Modify: Add a resize listener
+ * Modify: fix to adjust the newest jQuery.mousewheel.js
  */
 
 
@@ -189,11 +190,11 @@
          */
         function addMouseWheelEvent(){
             //console.log('==添加区域鼠标滚动事件==');
-            _this.obj.mousewheel && (_this.obj.mousewheel(function(data){
+            _this.obj.mousewheel && (_this.obj.mousewheel(function(data,delta){
                 //console.log('Has mouseWheel plug');
                 var //pos = $this.getPosition((data<0 ? 1 : -1) * 10),
                     pos = {'horizontal':'x','vertical':'y'},
-                    amount = (data<0 ? 1 : -1) * _this.opts.mouseMoveAmount,
+                    amount = (delta<0 ? 1 : -1) * _this.opts.mouseMoveAmount,
                     direction = _this.opts.mouseScrollDirection,
                     showXBar = _this.opts.showXBar,
                     showYBar = _this.opts.showYBar;

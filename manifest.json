@@ -55,6 +55,8 @@
 		"downloads",
 		"*://douban.fm/",
 		"*://*.douban.com/*",
-		"*://dblrc.sinaapp.com/*"
+		"*://dblrc.sinaapp.com/*",
+		"*://sug.music.baidu.com/*",
+		"*://play.baidu.com/*"
 	]
 }

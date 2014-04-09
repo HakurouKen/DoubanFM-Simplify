@@ -53,14 +53,17 @@ var Player = (function(window,document,$,undefined){
 			isAd: function(info){
 				return !/^\/subject\//.test(info.album);
 			},
-			initSong: function(info){
-				var self = this;
+			initSong: function(info,isPrev){
+				var self = this,
+					isPrev = isPrev === undefined ? true : false;
 				if( !this.isAd(info) ){
 					_info = info;
-					_list.push(info);
-					_index++;
 					_aud.src = info.url;
 					changeSong(info);
+					if(isPrev){
+						_index = _list.length;
+						_list.push(info);
+					}
 					chrome.extension.sendMessage({
 						"action": "notification",
 						"info" : info
@@ -129,7 +132,7 @@ var Player = (function(window,document,$,undefined){
 			},
 			prev: function(){
 				_index =  --_index >=0 ? _index : 0;
-				this.initSong(_list[_index]);
+				this.initSong(_list[_index],false);
 				return this;
 			},
 			heart: function(like){

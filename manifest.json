@@ -1,9 +1,10 @@
 {
 	"manifest_version": 2,
 
-	"name":"douban.fm - HTML5",
+	"name":"DoubanFM - Simplify",
 	"description": "Replace the flash player to HTML5",
 	"version": "0.0.4",
+	"author": "Hakurouken",
 	"content_scripts" : [
 	  {
 	    "matches" : [
@@ -55,7 +56,6 @@
 		"downloads",
 		"*://douban.fm/",
 		"*://*.douban.com/*",
-		"*://dblrc.sinaapp.com/*",
 		"*://sug.music.baidu.com/*",
 		"*://play.baidu.com/*"
 	]

@@ -225,6 +225,18 @@
 			lyric.fix(delta/20);
 		});
 
+		$lyricDom.find('.download-lrc').bind('click',function(){
+			var link = $(this).attr('link');
+			if(link){
+				chrome.extension.sendMessage({
+					"action": "download",
+					"url": link,
+					// seems that the text-flow file will not add extension automatically.
+					"name": $(this).attr('filename')+'.lrc'
+				}, function() {});
+			}
+		});
+
 		delete bindLyric;
 	}
 

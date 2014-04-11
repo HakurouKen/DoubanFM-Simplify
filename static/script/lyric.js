@@ -1,7 +1,8 @@
 var Lyric = (function(window, document, $, undefined) {
 
 	var getBaiduLrc = function(info,cb,failcb){
-		var	getSug = function(){
+		var	link,
+			getSug = function(){
 				return $.get(
 					'http://sug.music.baidu.com/info/suggestion?format=json&version=2&from=0&word=' + info.title + "-" + info.artist
 				);
@@ -25,7 +26,8 @@ var Lyric = (function(window, document, $, undefined) {
 			getLrc = function(info){
 				var lrcLink = info.data.songList[0].lrcLink;
 				if(lrcLink){
-					return $.get('http://play.baidu.com/'+lrcLink)
+					link = 'http://play.baidu.com'+lrcLink;
+					return $.get(link);
 				}
 				return $.Deferred().reject();
 			},
@@ -64,7 +66,7 @@ var Lyric = (function(window, document, $, undefined) {
 			getInfo(sug).done(function(info){
 
 				getLrc(info).done(function(raw){
-					cb( format(raw) , raw );
+					cb( format(raw) , raw , link);
 				}).fail(failcb);
 
 			}).fail(failcb);
@@ -72,12 +74,15 @@ var Lyric = (function(window, document, $, undefined) {
 	};
 
 	var Lyric = function(player,$dom) {
-		var _lrc = [],
-			_$lrcDom = $dom || $('body'),
-			_$lrcList = _$lrcDom.find('ul.lyrics'),
-			_timeStamps = [],
-			_prefix = 0,
-			_freezed = false,
+		var _lrc = [], // the formated lyric
+			_$lrcDom = $dom || $('body'), // the lyric container's dom
+			_$lrcList = _$lrcDom.find('ul.lyrics'), // the lyric dom
+			_$download = _$lrcDom.find('.download-lrc'), // the download dom
+			_timeStamps = [], // timestamps for search
+			_prefix = 0, // the offset of the song
+			_freezed = false, // whether the lyric is rolling
+			_link = "", // the download link of the song
+			_info, // the song info
 			_lrcNow = function(time,start,end){
 				var len = _timeStamps.length,
 					start = start || 0,
@@ -134,7 +139,7 @@ var Lyric = (function(window, document, $, undefined) {
 			};
 
 		var l = {
-			initLrc: function(lrc){
+			initLrc: function(lrc,link){
 				_$lrcList.empty().css('margin-top','0px');
 				_$lrcDom.find('.lyric-wrapper').removeClass('none');
 				_lrc = lrc || [];
@@ -151,6 +156,10 @@ var Lyric = (function(window, document, $, undefined) {
 				}else{
 					_$lrcDom.find('.lyric-wrapper').addClass('none');
 				}
+
+				_link = link || "";
+				_$download.attr('link',_link)
+						  .attr('filename',_info.title + '-' + _info.artist);
 
 				_timeStamps.push(player.getLength());
 				_timeStamps.unshift(0);
@@ -181,11 +190,11 @@ var Lyric = (function(window, document, $, undefined) {
 		};
 
 		player.bind('loadstart',function(){
-			var info = player.getSongInfo();
+			_info = player.getSongInfo();
 			l.freeze();
 
-			getBaiduLrc(info,function(lrc,raw){
-				l.initLrc(lrc);
+			getBaiduLrc(_info,function(lrc,raw,link){
+				l.initLrc(lrc,link);
 				l.unfreeze();
 			},function(){
 				l.initLrc();

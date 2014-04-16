@@ -132,7 +132,7 @@
 	function init(){
 		initFrame().then(function(){
 			initPlayer( $FM.find(".fm-bar") ).done(function(){
-				bindHotkey('#fm-player-container');
+				bindHotkey('#fm-player-container',player);
 				$FM.fadeIn(1000);
 				initToggleBtn();
 

@@ -53,7 +53,6 @@
 				per = (event.clientX - $vol.offset().left) / $vol.width();
 
 			player.vol(per * 100);
-			$curVal.css("width", per * $vol.width() + "px");
 		});
 
 		$player.find("div.player-wrapper").bind('click', function(event) {
@@ -165,7 +164,7 @@
 		delete window.bindToggleBtn;
 	};
 
-	window.bindHotkey = function(selector) {
+	window.bindHotkey = function(selector,player) {
 		var $playerDom = $(selector);
 		$('body').bind('keydown', function(event) {
 			if (!window.isOrginal) {
@@ -198,6 +197,22 @@
 
 					case 87: // do(w)nload
 						$playerDom.find('a.download').click();
+						break;
+
+					case 39: // Left Arrow
+						player.jumpTo( player.getCurTime() + 5);
+						break;
+
+					case 37: // Right Arrow
+						player.jumpTo( player.getCurTime() - 5);
+						break;
+
+					case 38: // Up Arrow
+						player.volUp(5);
+						break;
+
+					case 40: // Down Arrow
+						player.volDown(5);
 						break;
 
 					default:

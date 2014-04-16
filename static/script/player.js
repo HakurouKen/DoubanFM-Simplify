@@ -289,6 +289,13 @@ var Player = (function(window,document,$,undefined){
 			_$playerDom.find(".play-progress").width(_$loader.width()*_playingProgress);
 		});
 
+		_aud.addEventListener('volumechange',function(){
+			var $vol = _$playerDom.find(".volume"),
+				$curVal = $vol.find('.current-volume');
+
+			$curVal.css("width", _volume/100 * $vol.width() + "px");
+		});
+
 		return that;
 	
 	}

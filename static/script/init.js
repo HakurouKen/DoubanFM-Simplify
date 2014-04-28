@@ -60,7 +60,7 @@
 				});
 			});
 		}
-		return;
+		return $.Deferred().reject();
 	}
 
 	// player init

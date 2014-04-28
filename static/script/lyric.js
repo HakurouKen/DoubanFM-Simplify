@@ -36,26 +36,32 @@ var Lyric = (function(window, document, $, undefined) {
 				 	i=0,
 				 	len = rawArr.length,
 				 	checker = /^\[\d+:\d+(.\d+)\]/,
-				 	timeStamp = "",
+				 	matcher = /\[\d+:\d+(.\d+)\]/g ,
+				 	timeStamps = [],
 				 	cur,
 				 	curTime,
 				 	lrc = [];
 
 				 for( ; i < len ; i++ ){
 				 	if( checker.test(rawArr[i]) ){
-				 		timeStamp = rawArr[i].match(checker)[0];
-						cur = {},
-				 		cur.lrc = rawArr[i].replace(timeStamp,"");
-						curTime = 0;
-				 		timeStamp.replace(/[\[\]]/g,"").split(":").forEach(function(t,i){
-				 			curTime = curTime*60 + parseFloat(t,10);
+				 		timeStamps = rawArr[i].match(matcher);
+				 		timeStamps.forEach(function(timeStamp){
+							cur = {};
+				 			cur.lrc = rawArr[i].replace(timeStamps.join(""),"");
+				 			curTime = 0;
+					 		timeStamp.replace(/[\[\]]/g,"").split(":").forEach(function(t,i){
+					 			curTime = curTime*60 + parseFloat(t,10);
+					 		});
+					 		curTime = curTime*1000;
+					 		cur.time = curTime;
+					 		lrc.push(cur);
 				 		});
-				 		curTime = curTime*1000;
-				 		cur.time = curTime;
-
-				 		lrc.push(cur);
 				 	}
 				 }
+
+				 lrc.sort(function(lrc1,lrc2){
+				 	return lrc1.time - lrc2.time;
+				 });
 				
 				 return lrc;
 			}

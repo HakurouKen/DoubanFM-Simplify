@@ -26,5 +26,9 @@ var Utils = {
         for (cur in paras) {
             document.cookie = paras + "=" + paras[cur] + a + "; domain=" + (d || "douban.com") + "; path=" + (e || "/");
         }
+    },
+
+    "hasCookie": function(key){
+        return this.getCookie(key) === undefined;
     }
 }

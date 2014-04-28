@@ -90,11 +90,9 @@ var Player = (function(window,document,$,undefined){
 				return _list;
 			},
 			getNextSongList: function(type,cb){
-				var self = this;
-				$.ajax({
-					"url":"/j/mine/playlist",
-					"method":"GET",
-					"data":{
+				var self = this,
+					isPro = Utils.hasCookie('show_pro_expire_tip') || Utils.hasCookie('show_pro_init_tip'),
+					data = {
 						type: type ? type : "n",
 						sid: _info.sid,
 						pt: Math.round(_aud.currentTime * 10) /10.0,
@@ -102,7 +100,16 @@ var Player = (function(window,document,$,undefined){
 						pb: 64,
 						from : "mainsite",
 						r: Math.round(Math.random()*0xffffffffff).toString(16)
-					},
+					};
+
+					if(isPro){
+						data.pb = 192;
+						data.kbps = 192;
+					}
+
+				$.ajax({
+					"url":"/j/mine/playlist",
+					"data": data,
 					"success": function(data){
 						if(type !== "e"){
 							_songIndex = 0;

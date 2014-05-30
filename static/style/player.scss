@@ -36,13 +36,18 @@
 				float: left;
 				position: relative;
 				cursor: pointer;
+				width: $img_size;
+				height: $img_size;
+				text-align: center;
+				overflow: hidden;
+				line-height: $img_size;			
 
 				img{
-					border-top-left-radius: $player_radius;
-					border-bottom-left-radius: $player_radius;
+					border-radius: $player_radius;
+					border: 0;
+					vertical-align: middle;
 					width: $img_size;
 					height: $img_size;
-					border: 0;
 				}
 
 				&:after{

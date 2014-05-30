@@ -35,17 +35,20 @@ var Player = (function(window,document,$,undefined){
 				var title = info.title + " - " + info.artist;
 					title = title.length < 25 ? title : title.substr(0,23)+"...";
 
-				changeItem("div.cover>img","src",info.picture.replace(/\/mpic\//,"\/lpic\/"));
-				changeItem(".cover","data-album","http://music.douban.com"+info.album);
-				changeItem(".infos .artist","text",info.artist);
-				changeItem(".infos .album-title","text","<"+info.albumtitle+">");
-				changeItem(".infos .year","text",info.public_time);
-				changeItem(".infos .title-roller a","text",info.title);
-				changeItem(".infos .title-roller a","href","http://music.douban.com"+info.album);
-				changeItem(".download","text", title );
-				changeItem(".download","title","下载 : " + info.title + " - " + info.artist );
-				changeItem(".download","href", info.url );
-				$("title").text(info.title + " - 豆瓣FM");
+				var pic = info.picture.replace(/\/mpic\//,"\/lpic\/");
+
+				changeItem("div.cover>img","src",pic); // img link
+				changeItem("div.cover>img","alt",info.title); // img alternative
+				changeItem(".cover","data-album","http://music.douban.com"+info.album); // album link
+				changeItem(".infos .artist","text",info.artist); // artist
+				changeItem(".infos .album-title","text","<"+info.albumtitle+">"); // album title
+				changeItem(".infos .year","text",info.public_time); // year
+				changeItem(".infos .title-roller a","text",info.title); // title
+				changeItem(".infos .title-roller a","href","http://music.douban.com"+info.album); // douban album link
+				changeItem(".download","text", title ); // the download link
+				changeItem(".download","title","下载 : " + info.title + " - " + info.artist ); // download title
+				changeItem(".download","href", info.url ); // download link
+				$("title").text(info.title + " - 豆瓣FM"); // title
 			}
 		}
 
@@ -301,6 +304,22 @@ var Player = (function(window,document,$,undefined){
 				$curVal = $vol.find('.current-volume');
 
 			$curVal.css("width", _volume/100 * $vol.width() + "px");
+		});
+
+		_$playerDom.find(".cover img").load(function(){
+			var img = new Image(),
+				img_size = 245 ;
+			img.src = _info.picture.replace(/\/mpic\//,"\/lpic\/");
+			if( img.width / img.height > 1.1 ){
+				$(this).css("width",img_size)
+					.css("height","auto");
+			} else if ( img.height / img.width > 1.1 ){
+				$(this).css("height",img_size)
+					.css("width","auto");
+			} else {
+				$(this).css("height",img_size)
+					.css("width",img_size);
+			}
 		});
 
 		return that;

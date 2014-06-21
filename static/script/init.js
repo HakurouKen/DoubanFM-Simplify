@@ -143,6 +143,10 @@
 					window.lyric = Lyric( player,$FM.find('.lyric-container') );
 					bindLyric( lyric , $FM , $FM.find('.lyric-container') );
 				});
+
+				setTimeout(function(){
+					$("#fm-banner-ad-slot").remove();
+				},1000);
 			});
 		});
 	}
